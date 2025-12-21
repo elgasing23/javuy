@@ -1,0 +1,84 @@
+.mapContainer {
+    position: relative;
+    width: 100%;
+    padding: 4rem 0;
+    display: flex;
+    justify-content: center;
+    overflow-y: auto;
+    /* Transparent background to blend with page, but with subtle decor */
+    background-color: transparent;
+    background-image:
+        radial-gradient(white, rgba(255, 255, 255, .2) 2px, transparent 3px),
+        radial-gradient(white, rgba(255, 255, 255, .15) 1px, transparent 2px),
+        radial-gradient(white, rgba(255, 255, 255, .1) 2px, transparent 3px);
+    background-size: 550px 550px, 350px 350px, 250px 250px;
+    background-position: 0 0, 40px 60px, 130px 270px;
+    animation: drift 120s linear infinite;
+}
+
+@keyframes drift {
+    from {
+        background-position: 0 0, 40px 60px, 130px 270px;
+    }
+
+    to {
+        background-position: 550px 1000px, 390px 1060px, 380px 1270px;
+    }
+}
+
+.contentWrapper {
+    position: relative;
+}
+
+.svgLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Simple Connector */
+.connectorPath {
+    fill: none;
+    stroke: #444;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 10 10;
+    opacity: 0.6;
+}
+
+.dirtPath {
+    fill: none;
+    stroke: #4b4b4b;
+    /* Dirt color */
+    stroke-width: 40;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.5;
+}
+
+.dashedLine {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 10 20;
+}
+
+.nodesLayer {
+    position: relative;
+    z-index: 10;
+}
+
+.nodeWrapper {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    transition: transform 0.3s;
+}
+
+.nodeWrapper:hover {
+    transform: translate(-50%, -55%) scale(1.05);
+    z-index: 20;
+}

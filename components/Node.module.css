@@ -1,0 +1,140 @@
+.node {
+    width: 60px;
+    height: 60px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Main Node Container */
+.nodeContent {
+    width: 60px;
+    height: 60px;
+    background: #2d3436;
+    border-radius: 50%;
+    /* Circle Shape */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    box-shadow: 0 6px 0 #1a1d1e, 0 6px 12px rgba(0, 0, 0, 0.4);
+    /* 3D "Button" feel */
+    border: 3px solid #444;
+}
+
+.nodeContent:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 #1a1d1e, 0 3px 6px rgba(0, 0, 0, 0.4);
+}
+
+.inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+}
+
+/* Status Styles */
+/* Status Styles - Targeting the Inner Circle */
+.locked .nodeContent {
+    background: #2d3436;
+    opacity: 0.6;
+    filter: grayscale(1);
+    border-color: #444;
+}
+
+.active .nodeContent {
+    background: linear-gradient(135deg, #00d1b2, #00a896);
+    border-color: #fff;
+    transform: scale(1.1);
+    box-shadow: 0 6px 0 #008975, 0 0 15px rgba(0, 209, 178, 0.5);
+}
+
+.completed .nodeContent {
+    background: linear-gradient(135deg, #23d160, #20bc56);
+    border-color: #fff;
+    box-shadow: 0 6px 0 #1ca049, 0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+.node:hover:not(.locked) .nodeContent {
+    transform: translateY(-3px) scale(1.1);
+}
+
+.active:hover .nodeContent {
+    transform: translateY(-3px) scale(1.15);
+    box-shadow: 0 8px 0 #008975, 0 0 20px rgba(0, 209, 178, 0.6);
+}
+
+.icon {
+    font-size: 1.4rem;
+    z-index: 2;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 1px 0 rgba(0, 0, 0, 0.2));
+}
+
+.starIcon {
+    font-size: 1.6rem;
+    color: #xffd700;
+    animation: bounce 2s infinite;
+}
+
+/* Remove the "Stone" 3D helper span if it exists in JS, or just ignore it in CSS */
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.label {
+    position: absolute;
+    top: 70px;
+    /* Below the 60px node */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    width: 120px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: transparent;
+    padding: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    opacity: 0.8;
+    pointer-events: none;
+    line-height: 1.2;
+}
+
+.nodeContent:hover+.label,
+/* Assuming text is sibling? Check structure. It is inside. */
+.node:hover .label {
+    opacity: 1;
+    color: #fff;
+}
