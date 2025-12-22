@@ -54,7 +54,7 @@ export default function Login() {
                         type="text" required
                         value={form.username} onChange={e => setForm({ ...form, username: e.target.value })}
                         style={inputStyle}
-                        disabled={loading} {/* Disable input when loading */}
+                        disabled={loading}
                     />
                 </div>
 
@@ -64,16 +64,16 @@ export default function Login() {
                         type="password" required
                         value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
                         style={inputStyle}
-                        disabled={loading} {/* Disable input when loading */}
+                        disabled={loading}
                     />
                 </div>
 
                 <button
                     type="submit"
                     style={{ ...btnStyle, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
-                    disabled={loading} {/* Disable button when loading */}
+                    disabled={loading}
                 >
-                    {loading ? 'Logging in...' : 'Login'} {/* Change button text based on loading state */}
+                    {loading ? 'Logging in...' : 'Login'}
                 </button>
 
                 <p style={{ marginTop: '1.5rem', textAlign: 'center', color: '#888' }}>
