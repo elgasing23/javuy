@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { useRouter } from 'next/router';
+import toast from 'react-hot-toast';
 
 // PrismJS Integration
 import Editor from 'react-simple-code-editor';
@@ -120,13 +121,15 @@ export default function CreateChapter() {
 
             if (res.ok) {
                 setStatus('success');
+                toast.success('Level created successfully! Redirecting...');
                 setTimeout(() => router.push('/journey'), 1500);
             } else {
                 setStatus('error');
-                alert(data.message);
+                toast.error(data.message || 'Failed to create level');
             }
         } catch (err) {
             setStatus('error');
+            toast.error('Unexpected error occurred');
             console.error(err);
         }
     };

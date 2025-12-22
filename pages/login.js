@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 export default function Login() {
     const [form, setForm] = useState({ username: '', password: '' });
@@ -21,12 +22,15 @@ export default function Login() {
             const data = await res.json();
 
             if (res.ok) {
+                toast.success('Logged in successfully!'); // Use toast for success
                 router.push('/journey');
             } else {
-                setError(data.message);
+                toast.error(data.message || 'Login failed'); // Use toast for error
+                setLoading(false); // Reset loading on error
             }
         } catch (err) {
-            setError('Login failed');
+            toast.error('An unexpected error occurred'); // Use toast for unexpected error
+            setLoading(false); // Reset loading on catch error
         }
     };
 
@@ -42,7 +46,7 @@ export default function Login() {
             }}>
                 <h1 style={{ marginBottom: '2rem', textAlign: 'center', fontFamily: '"Outfit", sans-serif' }}>Welcome Back</h1>
 
-                {error && <div style={{ marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255, 107, 107, 0.1)', color: '#ff6b6b', borderRadius: '4px', textAlign: 'center' }}>{error}</div>}
+                {/* Removed error display div as toast handles messages */}
 
                 <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc' }}>Username</label>
@@ -50,6 +54,7 @@ export default function Login() {
                         type="text" required
                         value={form.username} onChange={e => setForm({ ...form, username: e.target.value })}
                         style={inputStyle}
+                        disabled={loading} {/* Disable input when loading */}
                     />
                 </div>
 
@@ -59,10 +64,17 @@ export default function Login() {
                         type="password" required
                         value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
                         style={inputStyle}
+                        disabled={loading} {/* Disable input when loading */}
                     />
                 </div>
 
-                <button type="submit" style={btnStyle}>Login</button>
+                <button
+                    type="submit"
+                    style={{ ...btnStyle, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+                    disabled={loading} {/* Disable button when loading */}
+                >
+                    {loading ? 'Logging in...' : 'Login'} {/* Change button text based on loading state */}
+                </button>
 
                 <p style={{ marginTop: '1.5rem', textAlign: 'center', color: '#888' }}>
                     Don't have an account? <Link href="/register" style={{ color: 'var(--accent-primary, #00d1b2)', textDecoration: 'none' }}>Register</Link>

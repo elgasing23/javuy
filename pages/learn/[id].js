@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import styles from '../../styles/Lesson.module.css';
+import toast from 'react-hot-toast';
 
 // Editor & Prism
 import Editor from 'react-simple-code-editor';
@@ -38,11 +39,16 @@ const LessonBlock = ({ block }) => {
 
             if (block.expectedOutput && realOutput === block.expectedOutput.trim()) {
                 setStatus('success');
+                toast.success('Correct Output! Great job.');
             } else if (block.expectedOutput) {
                 setStatus('error');
+                toast.error('Incorrect Output. Try again.');
+            } else {
+                toast.success('Code ran successfully');
             }
         } catch (err) {
             setOutput('Error: ' + err.message);
+            toast.error('Execution failed');
         } finally {
             setIsRunning(false);
         }
@@ -101,7 +107,12 @@ const LessonBlock = ({ block }) => {
                     ))}
                 </div>
                 <button
-                    onClick={() => setQuizResult(selectedOption === block.answer ? 'correct' : 'incorrect')}
+                    onClick={() => {
+                        const isCorrect = selectedOption === block.answer;
+                        setQuizResult(isCorrect ? 'correct' : 'incorrect');
+                        if (isCorrect) toast.success('Correct Answer!');
+                        else toast.error('Wrong answer, try again.');
+                    }}
                     style={{ marginTop: '1rem', padding: '0.6rem 1.5rem', background: '#444', border: 'none', color: '#fff', borderRadius: '4px', cursor: 'pointer' }}
                 >
                     Check Answer
@@ -132,13 +143,21 @@ const Lesson = () => {
     }, [id]);
 
     const handleComplete = () => {
-        fetch('/api/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chapterId: id })
-        })
-            .then(res => res.json())
-            .then(() => router.push('/journey'));
+        toast.promise(
+            fetch('/api/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chapterId: id })
+            }).then(res => res.json()),
+            {
+                loading: 'Claiming XP...',
+                success: () => {
+                    router.push('/journey');
+                    return `Level Completed! +${chapter?.xpReward || 0} XP`;
+                },
+                error: 'Could not complete level.',
+            }
+        );
     };
 
     if (loading) return <Layout><div style={{ color: 'white', padding: '2rem' }}>Loading Lesson...</div></Layout>;

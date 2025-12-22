@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 export default function Register() {
     const [form, setForm] = useState({ username: '', password: '', confirmPassword: '' });
@@ -11,10 +12,10 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError(''); // Clear any previous internal error state
 
         if (form.password !== form.confirmPassword) {
-            setError('Passwords do not match');
+            toast.error('Passwords do not match');
             return;
         }
 
@@ -29,13 +30,14 @@ export default function Register() {
             const data = await res.json();
 
             if (res.ok) {
+                toast.success('Account created! Managing login...');
                 router.push('/journey');
             } else {
-                setError(data.message);
+                toast.error(data.message || 'Registration failed');
                 setLoading(false);
             }
         } catch (err) {
-            setError('Registration failed');
+            toast.error('An unexpected error occurred');
             setLoading(false);
         }
     };
@@ -52,7 +54,7 @@ export default function Register() {
             }}>
                 <h1 style={{ marginBottom: '2rem', textAlign: 'center', fontFamily: '"Outfit", sans-serif' }}>Create Account</h1>
 
-                {error && <div style={{ marginBottom: '1rem', padding: '0.5rem', background: 'rgba(255, 107, 107, 0.1)', color: '#ff6b6b', borderRadius: '4px', textAlign: 'center' }}>{error}</div>}
+                {/* The error display div is removed as toast will handle error messages */}
 
                 <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', color: '#ccc' }}>Username</label>
@@ -60,6 +62,7 @@ export default function Register() {
                         type="text" required
                         value={form.username} onChange={e => setForm({ ...form, username: e.target.value })}
                         style={inputStyle}
+                        disabled={loading}
                     />
                 </div>
 
@@ -69,6 +72,7 @@ export default function Register() {
                         type="password" required
                         value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
                         style={inputStyle}
+                        disabled={loading}
                     />
                 </div>
 
@@ -78,10 +82,11 @@ export default function Register() {
                         type="password" required
                         value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                         style={inputStyle}
+                        disabled={loading}
                     />
                 </div>
 
-                <button type="submit" disabled={loading} style={btnStyle}>
+                <button type="submit" disabled={loading} style={{ ...btnStyle, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
                     {loading ? 'Creating Account...' : 'Register'}
                 </button>
 
