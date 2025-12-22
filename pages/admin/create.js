@@ -53,7 +53,8 @@ export default function CreateChapter() {
                 answer: 0
             };
         } else if (type === 'code') {
-            newBlock.expectedOutput = ''; // Init expected output
+            newBlock.value = 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello World");\n    }\n}';
+            newBlock.expectedOutput = 'Hello World';
         }
         setBlocks([...blocks, newBlock]);
         setTimeout(() => {
