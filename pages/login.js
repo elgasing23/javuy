@@ -7,11 +7,13 @@ import toast from 'react-hot-toast';
 export default function Login() {
     const [form, setForm] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         try {
             const res = await fetch('/api/auth/login', {
