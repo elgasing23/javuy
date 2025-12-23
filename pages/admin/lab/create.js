@@ -19,26 +19,25 @@ export default function AdminLabCreate() {
 
         setUploading(true);
         try {
-            // 1. Upload PDF
-            const formData = new FormData();
-            formData.append('file', pdfFile);
-
-            const uploadRes = await fetch('/api/upload', {
-                method: 'POST',
-                body: formData
+            // 1. Convert PDF to Data URI
+            const toBase64 = file => new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
             });
-            const uploadData = await uploadRes.json();
 
-            if (!uploadRes.ok) throw new Error(uploadData.message || 'Upload failed');
-            const pdfUrl = uploadData.url;
+            const pdfDataUri = await toBase64(pdfFile);
 
-            // 2. Create Lab
+            // 2. Create Lab with PDF Data URI directly
+            // No need to upload to 'public' folder since we can't write there in serverless.
+            // We store the base64 string in the DB.
             const labRes = await fetch('/api/lab', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title,
-                    pdfUrl,
+                    pdfUrl: pdfDataUri,
                     description: '# ' + title + '\nSee attached PDF for instructions.',
                     files: [{ name: 'Main.java', content: 'public class Main {\n    public static void main(String[] args) {\n        // Your code here\n    }\n}' }]
                 })
