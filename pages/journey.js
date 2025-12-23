@@ -57,7 +57,8 @@ export async function getServerSideProps(context) {
                         username: user.username,
                         xp: user.xp,
                         streak: user.streak,
-                        avatar: user.avatar
+                        avatar: user.avatar,
+                        role: user.role // Pass role to client
                     },
                     journey
                 }
@@ -79,7 +80,10 @@ export default function Journey({ journeyData }) {
 
     const handleChapterClick = (chapterId) => {
         const chapter = journeyData.journey.find(c => c._id === chapterId);
-        if (chapter.status === 'locked') return;
+
+        // Allow access if active, completed, OR if user is admin
+        const isAdmin = journeyData.user.role === 'admin';
+        if (chapter.status === 'locked' && !isAdmin) return;
 
         router.push(`/learn/${chapterId}`);
     };
