@@ -1,7 +1,7 @@
 import Node from './Node';
 import styles from './JourneyMap.module.css';
 
-const JourneyMap = ({ chapters, onChapterClick, role }) => {
+const JourneyMap = ({ chapters, onChapterClick, onEditClick, role }) => {
     const WIDTH = 600;
     const CENTER_X = WIDTH / 2;
     const ITEM_HEIGHT = 160;
@@ -70,6 +70,9 @@ const JourneyMap = ({ chapters, onChapterClick, role }) => {
                                     chapter={chapter}
                                     status={visualStatus}
                                     onClick={() => onChapterClick(chapter._id)}
+                                    // New Props for Direct Editing
+                                    isAdmin={isAdmin}
+                                    onEdit={() => onEditClick(chapter._id)}
                                 />
                             </div>
                         );

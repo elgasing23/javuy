@@ -88,6 +88,10 @@ export default function Journey({ journeyData }) {
         router.push(`/learn/${chapterId}`);
     };
 
+    const handleEditClick = (chapterId) => {
+        router.push(`/admin/edit/${chapterId}`);
+    };
+
     return (
         <Layout>
             <header style={{ marginBottom: '2rem', textAlign: 'center' }}>
@@ -112,6 +116,7 @@ export default function Journey({ journeyData }) {
             <JourneyMap
                 chapters={journeyData.journey}
                 onChapterClick={handleChapterClick}
+                onEditClick={handleEditClick}
                 role={journeyData.user.role}
             />
         </Layout>
