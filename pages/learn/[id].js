@@ -106,7 +106,47 @@ const LessonBlock = ({ block }) => {
     if (block.type === 'text') {
         return (
             <div className={styles.textBlock} style={{ marginBottom: '1.5rem', fontSize: '1.1rem', lineHeight: '1.6', color: '#ddd' }}>
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.value}</ReactMarkdown>
+                <div className="markdown-content">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.value}</ReactMarkdown>
+                </div>
+                <style jsx global>{`
+                    .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+                        margin-top: 1.5rem; margin-bottom: 0.5rem; color: #fff;
+                    }
+                    .markdown-content p {
+                        margin-bottom: 1rem; line-height: 1.6; color: #ddd;
+                    }
+                    .markdown-content ul, .markdown-content ol {
+                        margin-bottom: 1rem; padding-left: 20px; color: #ddd;
+                    }
+                    .markdown-content li {
+                        margin-bottom: 0.5rem;
+                    }
+                    .markdown-content code {
+                        background: #333; padding: 2px 4px; border-radius: 4px; font-family: monospace;
+                    }
+                    .markdown-content pre {
+                        background: #1e1e1e; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem;
+                    }
+                    .markdown-content pre code {
+                        background: transparent; padding: 0;
+                    }
+                    .markdown-content blockquote {
+                        border-left: 4px solid #555; padding-left: 1rem; color: #aaa; margin: 1rem 0;
+                    }
+                    .markdown-content a {
+                        color: var(--accent-primary, #00d1b2);
+                    }
+                    .markdown-content table {
+                        width: 100%; border-collapse: collapse; margin: 1rem 0;
+                    }
+                    .markdown-content th, .markdown-content td {
+                        border: 1px solid #444; padding: 8px; text-align: left;
+                    }
+                    .markdown-content th {
+                        background: #333;
+                    }
+                 `}</style>
             </div>
         );
     }
