@@ -22,16 +22,21 @@ export default async function handler(req, res) {
     try {
         await dbConnect();
 
+        // Parallelize independent operations:
         // 1. Check if user exists
-        const existingUser = await User.findOne({ username });
+        // 2. Hash Password
+        // 3. Find First Chapter (for progress)
+        const [existingUser, hashedPassword, firstChapter] = await Promise.all([
+            User.findOne({ username }),
+            bcrypt.hash(password, 10),
+            Chapter.findOne({ order: 1 })
+        ]);
+
         if (existingUser) {
             return res.status(400).json({ message: 'Username already taken' });
         }
 
-        // 2. Hash Password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 3. Create User
+        // 4. Create User
         const user = await User.create({
             username,
             password: hashedPassword,
@@ -41,8 +46,7 @@ export default async function handler(req, res) {
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${username}`
         });
 
-        // 4. Initialize Progress (Unlock Chapter 1)
-        const firstChapter = await Chapter.findOne({ order: 1 });
+        // 5. Initialize Progress (Unlock Chapter 1)
         if (firstChapter) {
             await Progress.create({
                 user: user._id,

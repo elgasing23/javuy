@@ -45,17 +45,18 @@ export default async function handler(req, res) {
                 title: 'Introduction to Java',
                 order: 1,
                 content: [
-                    { type: 'text', value: '# Welcome to Java\nJava is a powerful language. Let\'s write your first code!' },
+                    { type: 'text', value: '# Welcome to Java ☕\\n\\nJava is an **Object-Oriented Programming (OOP)** language. This means everything in Java is associated with classes and objects.\\n\\n### Why OOP?\\n- **Modularity**: Code is organized into efficiently manageable pieces.\\n- **Reuse**: Write once, use everywhere.\\n- **Security**: Data hiding and encapsulation.' },
+                    { type: 'text', value: '### Your First Program\\nEvery Java application begins with a class definition.\\nThe entry point of the code is the `main` method.\\n\\n```java\\npublic class Main {\\n    public static void main(String[] args) {\\n        // Code goes here\\n    }\\n}\\n```\\n\\n**Semicolons (;)** are mandatory! Every statement must end with one, or the compiler will yell at you 😡.' },
                     {
                         type: 'code',
-                        value: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello Java");\n    }\n}',
-                        expectedOutput: 'Hello Java'
+                        value: 'public class Main {\n    public static void main(String[] args) {\n        // Try changing the text inside the quotes\n        System.out.println("Hello Javuy!");\n    }\n}',
+                        expectedOutput: 'Hello Javuy!'
                     },
                     {
                         type: 'quiz',
-                        question: 'What is the entry point of a Java program?',
-                        options: ['start()', 'main()', 'run()', 'init()'],
-                        answer: 1
+                        question: 'What character is used to end a statement in Java?',
+                        options: ['. (Dot)', ': (Colon)', '; (Semicolon)', ', (Comma)'],
+                        answer: 2
                     }
                 ],
                 xpReward: 50
