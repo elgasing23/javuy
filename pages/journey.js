@@ -1,35 +1,81 @@
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import jwt from 'jsonwebtoken';
+import dbConnect from '../lib/db';
+import Chapter from '../lib/models/Chapter';
+import Progress from '../lib/models/Progress';
+import User from '../lib/models/User';
 import Layout from '../components/Layout';
 import JourneyMap from '../components/JourneyMap';
-import { useRouter } from 'next/router';
 
-export default function Journey() {
-    const [journeyData, setJourneyData] = useState(null);
-    const [loading, setLoading] = useState(true);
+export async function getServerSideProps(context) {
+    const { req } = context;
+    const { token } = req.cookies;
+    const JWT_SECRET = 'super-secret-key-change-this-in-prod';
+
+    if (!token) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        };
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        await dbConnect();
+
+        const user = await User.findById(decoded.userId).lean();
+        if (!user) {
+            return {
+                redirect: {
+                    destination: '/login',
+                    permanent: false,
+                },
+            };
+        }
+
+        const chapters = await Chapter.find({}).sort({ order: 1 }).lean();
+        const progressDocs = await Progress.find({ user: user._id }).lean();
+
+        // Map progress & Serialize for Next.js (Date objects to Strings)
+        const journey = chapters.map(chapter => {
+            const progress = progressDocs.find(p => p.chapter.toString() === chapter._id.toString());
+            return {
+                ...chapter,
+                _id: chapter._id.toString(),
+                createdAt: chapter.createdAt?.toISOString() || null,
+                updatedAt: chapter.updatedAt?.toISOString() || null,
+                status: progress ? progress.status : 'locked',
+            };
+        });
+
+        return {
+            props: {
+                journeyData: {
+                    user: {
+                        username: user.username,
+                        xp: user.xp,
+                        streak: user.streak,
+                        avatar: user.avatar
+                    },
+                    journey
+                }
+            },
+        };
+
+    } catch (err) {
+        return {
+            redirect: {
+                destination: '/login',
+                permanent: false,
+            },
+        };
+    }
+}
+
+export default function Journey({ journeyData }) {
     const router = useRouter();
-
-    useEffect(() => {
-        fetch('/api/journey')
-            .then(res => {
-                if (res.status === 401) {
-                    router.push('/login');
-                    throw new Error('Not authenticated');
-                }
-                return res.json();
-            })
-            .then(data => {
-                if (!data.user) {
-                    throw new Error('No user data');
-                }
-                setJourneyData(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error('Failed to fetch journey:', err);
-                // If it wasn't a redirect (e.g. network error), we might want to stay here or show error.
-                // But for now, if loading gets stuck, user sees "Loading journey..."
-            });
-    }, []);
 
     const handleChapterClick = (chapterId) => {
         const chapter = journeyData.journey.find(c => c._id === chapterId);
@@ -37,9 +83,6 @@ export default function Journey() {
 
         router.push(`/learn/${chapterId}`);
     };
-
-    if (loading) return <Layout><div style={{ color: 'white' }}>Loading journey...</div></Layout>;
-    if (!journeyData) return <Layout><div style={{ color: 'white' }}>Error loading journey. Ensure database is seeded.</div></Layout>;
 
     return (
         <Layout>
