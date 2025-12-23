@@ -4,6 +4,14 @@ import User from '../../../lib/models/User';
 import jwt from 'jsonwebtoken';
 import { serialize } from 'cookie';
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: '10mb',
+        },
+    },
+};
+
 // Helper to check admin
 const checkAdmin = async (req) => {
     const { token } = req.cookies;
