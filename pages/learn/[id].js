@@ -6,6 +6,8 @@ import toast from 'react-hot-toast';
 
 // Editor
 import Editor from '@monaco-editor/react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const LessonBlock = ({ block }) => {
     // Code Block State
@@ -102,8 +104,13 @@ const LessonBlock = ({ block }) => {
     };
 
     if (block.type === 'text') {
-        return <p className={styles.textBlock} style={{ marginBottom: '1.5rem', fontSize: '1.1rem', lineHeight: '1.6', color: '#ddd' }}>{block.value}</p>;
+        return (
+            <div className={styles.textBlock} style={{ marginBottom: '1.5rem', fontSize: '1.1rem', lineHeight: '1.6', color: '#ddd' }}>
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{block.value}</ReactMarkdown>
+            </div>
+        );
     }
+
 
     if (block.type === 'code') {
         return (
