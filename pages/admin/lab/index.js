@@ -10,7 +10,7 @@ export default function AdminLabsIndex() {
     const router = useRouter();
 
     useEffect(() => {
-        fetch('/api/labs')
+        fetch('/api/lab')
             .then(res => res.json())
             .then(data => {
                 if (data.labs) {
@@ -24,38 +24,14 @@ export default function AdminLabsIndex() {
             });
     }, []);
 
-    const createLab = async () => {
-        const title = prompt("Enter Lab Title:");
-        if (!title) return;
 
-        try {
-            const res = await fetch('/api/labs', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title,
-                    description: '# New Lab\nDescribe the task here.',
-                    files: [{ name: 'Main.java', content: 'public class Main {\n    public static void main(String[] args) {\n        // Code here\n    }\n}' }]
-                })
-            });
-            const data = await res.json();
-            if (data.lab) {
-                toast.success('Lab Created');
-                router.push(`/admin/labs/${data.lab.id}`);
-            } else {
-                toast.error(data.message || 'Failed to create');
-            }
-        } catch (e) {
-            toast.error('Error creating lab');
-        }
-    };
 
     const deleteLab = async (e, id) => {
         e.stopPropagation();
         if (!confirm('Are you sure you want to delete this lab?')) return;
 
         try {
-            const res = await fetch(`/api/labs/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/lab/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 setLabs(labs.filter(l => l.id !== id));
                 toast.success('Lab deleted');
@@ -75,7 +51,7 @@ export default function AdminLabsIndex() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <h1 style={{ color: '#fff' }}>Manage Java Labs</h1>
                     <button
-                        onClick={createLab}
+                        onClick={() => router.push('/admin/lab/create')}
                         style={{
                             background: 'var(--accent-primary)',
                             color: 'black',
@@ -94,7 +70,7 @@ export default function AdminLabsIndex() {
                     {labs.map(lab => (
                         <div
                             key={lab.id}
-                            onClick={() => router.push(`/admin/labs/${lab.id}`)}
+                            onClick={() => router.push(`/admin/lab/${lab.id}`)}
                             style={{
                                 background: '#1e1e1e',
                                 padding: '1rem',

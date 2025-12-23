@@ -20,7 +20,7 @@ export default function LabPlayground() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`/api/labs/${id}`)
+        fetch(`/api/lab/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.lab) {

@@ -10,7 +10,7 @@ export default function LabsIndex() {
     const router = useRouter();
 
     useEffect(() => {
-        fetch('/api/labs')
+        fetch('/api/lab')
             .then(res => res.json())
             .then(data => {
                 if (data.labs) {
@@ -53,7 +53,7 @@ export default function LabsIndex() {
                     {labs.map(lab => (
                         <div
                             key={lab.id}
-                            onClick={() => router.push(`/labs/${lab.id}`)}
+                            onClick={() => router.push(`/lab/${lab.id}`)}
                             style={{
                                 background: '#1e1e1e',
                                 borderRadius: '12px',

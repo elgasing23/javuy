@@ -16,7 +16,7 @@ export default function AdminLabEdit() {
 
     useEffect(() => {
         if (!id) return;
-        fetch(`/api/labs/${id}`)
+        fetch(`/api/lab/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.lab) {
@@ -34,7 +34,7 @@ export default function AdminLabEdit() {
 
     const handleSave = async () => {
         try {
-            const res = await fetch(`/api/labs/${id}`, {
+            const res = await fetch(`/api/lab/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(lab)
@@ -82,7 +82,7 @@ export default function AdminLabEdit() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
                     <h1 style={{ color: '#fff' }}>Edit Lab {lab.id}</h1>
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button onClick={() => router.push('/admin/labs')} style={{ background: 'transparent', color: '#aaa', border: 'none', cursor: 'pointer' }}>Cancel</button>
+                        <button onClick={() => router.push('/admin/lab')} style={{ background: 'transparent', color: '#aaa', border: 'none', cursor: 'pointer' }}>Cancel</button>
                         <button onClick={handleSave} style={{ background: 'var(--accent-primary)', color: 'black', border: 'none', padding: '0.6rem 2rem', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer' }}>Save Changes</button>
                     </div>
                 </div>
