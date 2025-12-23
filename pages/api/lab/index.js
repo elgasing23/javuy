@@ -15,12 +15,16 @@ export const config = {
 // Helper to check admin
 const checkAdmin = async (req) => {
     const { token } = req.cookies;
+    console.log('CheckAdmin: Token present?', !!token);
     if (!token) return false;
     try {
-        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY'); // TODO: Use env var in real app
+        const decoded = jwt.verify(token, 'super-secret-key-change-this-in-prod');
+        console.log('CheckAdmin: Decoded', decoded);
         const user = await User.findById(decoded.userId);
+        console.log('CheckAdmin: User found?', !!user, 'Role:', user?.role);
         return user && user.role === 'admin';
     } catch (e) {
+        console.error('CheckAdmin: Verify Error', e.message);
         return false;
     }
 };

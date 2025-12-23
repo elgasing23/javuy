@@ -7,7 +7,7 @@ const checkAdmin = async (req) => {
     const { token } = req.cookies;
     if (!token) return false;
     try {
-        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY');
+        const decoded = jwt.verify(token, 'super-secret-key-change-this-in-prod');
         const user = await User.findById(decoded.userId);
         return user && user.role === 'admin';
     } catch (e) {
