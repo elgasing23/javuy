@@ -187,6 +187,7 @@ const Lesson = () => {
     const { id } = router.query;
     const [chapter, setChapter] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         if (!id) return;
@@ -195,6 +196,12 @@ const Lesson = () => {
             .then(data => {
                 const found = data.journey.find(c => c._id === id);
                 setChapter(found);
+
+                // Check if admin
+                if (data.user && data.user.role === 'admin') {
+                    setIsAdmin(true);
+                }
+
                 setLoading(false);
             });
     }, [id]);
@@ -228,9 +235,23 @@ const Lesson = () => {
     return (
         <Layout>
             <div className={styles.lessonContainer} style={{ maxWidth: '800px', margin: '0 auto', paddingBottom: '100px' }}>
-                <div className={styles.header} style={{ marginBottom: '2rem' }}>
-                    <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', marginBottom: '1rem' }}>← Back</button>
-                    <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)' }}>{chapter.title}</h1>
+                <div className={styles.header} style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                        <button onClick={() => router.back()} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', marginBottom: '1rem' }}>← Back</button>
+                        <h1 style={{ fontSize: '2.5rem', fontFamily: 'var(--font-heading)' }}>{chapter.title}</h1>
+                    </div>
+                    {isAdmin && (
+                        <button
+                            onClick={() => router.push(`/admin/edit/${id}`)}
+                            style={{
+                                background: 'var(--bg-secondary)', border: '1px solid #444',
+                                color: 'var(--accent-primary)', padding: '0.5rem 1rem',
+                                borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
+                            }}
+                        >
+                            ✎ Edit Level
+                        </button>
+                    )}
                 </div>
 
                 <div className={styles.content}>
