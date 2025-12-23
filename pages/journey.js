@@ -112,6 +112,7 @@ export default function Journey({ journeyData }) {
             <JourneyMap
                 chapters={journeyData.journey}
                 onChapterClick={handleChapterClick}
+                role={journeyData.user.role}
             />
         </Layout>
     );

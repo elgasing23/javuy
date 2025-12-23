@@ -1,7 +1,7 @@
 import Node from './Node';
 import styles from './JourneyMap.module.css';
 
-const JourneyMap = ({ chapters, onChapterClick }) => {
+const JourneyMap = ({ chapters, onChapterClick, role }) => {
     const WIDTH = 600;
     const CENTER_X = WIDTH / 2;
     const ITEM_HEIGHT = 160;
@@ -36,6 +36,8 @@ const JourneyMap = ({ chapters, onChapterClick }) => {
         }
     });
 
+    const isAdmin = role === 'admin';
+
     return (
         <div className={styles.mapContainer}>
             <div className={styles.contentWrapper} style={{ width: WIDTH, height: totalHeight }}>
@@ -47,6 +49,14 @@ const JourneyMap = ({ chapters, onChapterClick }) => {
                 <div className={styles.nodesLayer}>
                     {chapters.map((chapter, index) => {
                         const pos = getPos(index);
+                        // UX: If admin, show locked nodes as 'active' (clickable), or pass a flag
+                        // But to keep it simple, let's just pretend they are active for the visual component?
+                        // Actually, I can pass status logic here.
+                        let visualStatus = chapter.status;
+                        if (isAdmin && chapter.status === 'locked') {
+                            visualStatus = 'active'; // Visually unlock for admin
+                        }
+
                         return (
                             <div
                                 key={chapter._id}
@@ -58,7 +68,7 @@ const JourneyMap = ({ chapters, onChapterClick }) => {
                             >
                                 <Node
                                     chapter={chapter}
-                                    status={chapter.status}
+                                    status={visualStatus}
                                     onClick={() => onChapterClick(chapter._id)}
                                 />
                             </div>
