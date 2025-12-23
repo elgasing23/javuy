@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Layout from '../../../components/Layout';
+import MarkdownEditor from '../../../components/MarkdownEditor';
 import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
@@ -221,16 +222,10 @@ export default function EditChapter() {
                                 </div>
 
                                 {block.type === 'text' && (
-                                    <textarea
-                                        rows="1"
-                                        placeholder="Type text, markdown supported..."
+                                    <MarkdownEditor
                                         value={block.value}
-                                        onChange={(e) => {
-                                            updateBlock(index, e.target.value);
-                                            e.target.style.height = e.target.scrollHeight + 'px';
-                                        }}
-                                        style={textBlockStyle}
-                                        onFocus={(e) => e.target.style.height = e.target.scrollHeight + 'px'}
+                                        onChange={(val) => updateBlock(index, val)}
+                                        placeholder="Type text, markdown supported... (Preview available)"
                                     />
                                 )}
 
